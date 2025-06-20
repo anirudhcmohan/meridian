@@ -1,0 +1,8 @@
+.pnpm-store/
+node_modules/
+.git/
+.gemini/
+dist/
+.env*
+*.log
+__pycache__/

@@ -1,0 +1,1 @@
+ALTER TABLE "articles" ADD COLUMN "in_report" boolean DEFAULT false;

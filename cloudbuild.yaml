@@ -1,0 +1,25 @@
+steps:
+# Install dependencies and build the scraper
+- name: 'gcr.io/cloud-builders/npm'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    npm install -g pnpm
+    pnpm --filter @meridian/scrapers... install
+    pnpm --filter @meridian/scrapers build
+
+# Build the docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t',
+    'us-central1-docker.pkg.dev/$PROJECT_ID/scrapers-repo/meridian-scraper:latest',
+    '-f',
+    'scrapers.Dockerfile',
+    '.'
+  ]
+
+# Push the docker image
+images:
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/scrapers-repo/meridian-scraper:latest'

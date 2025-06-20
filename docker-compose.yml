@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  scrapers:
+    build:
+      context: .
+      dockerfile: scrapers.Dockerfile
+    restart: always
+    ports:
+      - '3001:3000'
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_BASE_URL=${GOOGLE_BASE_URL:-https://generativelanguage.googleapis.com}
+      - MERIDIAN_SECRET_KEY=${MERIDIAN_SECRET_KEY}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+      - PORT=3000
+    volumes:
+      - /dev/shm:/dev/shm  # Shared memory for Puppeteer
+
+  briefs:
+    build:
+      context: .
+      dockerfile: apps/briefs/Dockerfile
+    restart: always
+    ports:
+      - '8000:8000'
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PORT=8000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NUXT_PUBLIC_WORKER_API=http://localhost:3001
+    depends_on:
+      - scrapers
+      - briefs

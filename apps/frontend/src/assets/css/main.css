@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+u {
+  @apply text-lg;
+}
+
+/* p {
+  @apply;
+} */
